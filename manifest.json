@@ -1,0 +1,23 @@
+{
+    "name": "My Test Chrome extension",
+    "version": "0.1.0",
+    "description": "My Chrome extension for managing fonts",
+    "permissions": ["storage", "tabs"],
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["script.js"],
+        "css": ["styles.css"]
+      }
+    ],
+    "action": {
+      "default_icon": {
+        "16": "assets/ext-icon.png",
+        "24": "assets/ext-icon.png",
+        "32": "assets/ext-icon.png"
+      },
+      "default_title": "My Fonts",
+      "default_popup": "popup.html"
+    },
+    "manifest_version": 3
+}
