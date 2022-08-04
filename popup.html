@@ -9,12 +9,37 @@
     <title>My Fonts</title>
 </head>
 
-<body>
-    My fonts
+<body class="extension-popup-body">
+    <h1>FONT MANAGER</h1>
     <hr>
 
-    <div onclick="inspectFont()" class="inspect-btn">INSPECT FONT</div>
+    <div class="inspect-btn main-btn">INSPECT FONT</div>
 
+
+    <div class="font-inspect-container">
+    </div>
+
+    <hr>
+
+    <div class="font-name-container">
+        <label for="font-name-txt">Name your font:</label>
+        <input type="text" id="font-name-txt">
+    </div>
+    <div class="save-font-btn main-btn">SAVE FONT</div>
+
+    <hr>
+
+    <h2>
+        My fonts
+    </h2>
+    <div class="saved-fonts-container">
+        <!-- <div class="saved-font">
+            <h3>Moj prvi font</h3>
+            <div>Font size:</div>
+            <div>Font weight</div>
+            <div>Font family: </div>
+        </div> -->
+    </div>
     <script src="script.js"></script>
 </body>
 

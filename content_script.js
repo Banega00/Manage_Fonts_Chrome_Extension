@@ -6,9 +6,20 @@ function firstParent(node) {
 
 const printSelection = event => {
     const selection = window.getSelection();
+    const styles = window.getComputedStyle(firstParent(selection.anchorNode))
+    if (!styles) {
+        return;
+    }
 
-    console.log(window.getComputedStyle(firstParent(selection.anchorNode)).fontFamily);
-
+    chrome.storage.sync.set({
+        fontForInspection: {
+            font: styles.font,
+            fontFamily: styles.fontFamily,
+            fontWeight: styles.fontWeight,
+            fontSize: styles.fontSize,
+            color: styles.color
+        }
+    })
 }
 
 function debounce(func, wait, immediate) {
@@ -27,4 +38,4 @@ function debounce(func, wait, immediate) {
 };
 
 
-document.addEventListener("selectionchange", debounce(printSelection, 1500))
+document.addEventListener("selectionchange", debounce(printSelection, 900))
