@@ -1,0 +1,24 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body {
+    padding: 10px;
+    background-color: azure;
+    width: 400px;
+}
+
+.inspect-btn {
+    background-color: cadetblue;
+    padding: 10px;
+    border-radius: 20px;
+    margin: 15px 0;
+    color: white;
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 4px 3px 15px -4px rgba(0, 0, 0, 0.75);
+
+}
