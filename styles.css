@@ -23,3 +23,38 @@ body.extension-popup-body {
     display: flex;
     flex-direction: column;
 }
+
+.extension-popup-body .saved-font{
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.extension-popup-body .saved-font:hover{
+    background-color: rgba(68, 231, 79, 0.25);
+}
+
+.extension-popup-body .saved-font .title-bar{
+    display: flex;
+}
+
+.extension-popup-body .saved-font .title-bar h3{
+    margin-right: auto;
+}
+
+.extension-popup-body .saved-font .command{
+    margin-left: 5px;
+    cursor: pointer;
+    padding:3px;
+    border-radius: 50%;
+}
+
+.extension-popup-body .saved-font .command:hover{
+    transform:scale(1.1);
+    transition: all 0.2s ease;
+}
+
+.extension-popup-body .saved-font .properties.hidden{
+    display: none;
+}
