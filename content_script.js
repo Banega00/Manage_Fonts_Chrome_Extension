@@ -72,6 +72,7 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
+
 function getNextNode(node) {
     if (node.firstChild)
         return node.firstChild;
