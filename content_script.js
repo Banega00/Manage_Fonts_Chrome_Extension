@@ -23,7 +23,7 @@ const printSelection = event => {
 }
 
 function debounce(func, wait, immediate) {
-    var timeout;
+    let timeout;
     return function () {
         let context = this, args = arguments;
         let later = function () {
@@ -39,3 +39,69 @@ function debounce(func, wait, immediate) {
 
 
 document.addEventListener("selectionchange", debounce(printSelection, 900))
+
+chrome.runtime.onMessage.addListener(
+    function (request, sender, sendResponse) {
+        console.log(sender.tab ?
+            "from a content script:" + sender.tab.url :
+            "from the extension");
+
+        if (request.type == 'change_selected') {
+            console.log(request.fontData)
+
+            const selection = window.getSelection();
+            for (let index = 0; index < selection.rangeCount; index++) {
+                const range = selection.getRangeAt(index);
+                const nodesInRange = getNodesInRange(range);
+                for (const element of nodesInRange) {
+                    console.log(element)
+                    if(element.style){
+                        element.style.font = request.fontData.font
+                    }
+                    
+                }
+            }
+
+        }
+    }
+);
+
+function getNextNode(node)
+{
+    if (node.firstChild)
+        return node.firstChild;
+    while (node)
+    {
+        if (node.nextSibling)
+            return node.nextSibling;
+        node = node.parentNode;
+    }
+}
+
+function getNodesInRange(range)
+{
+    let start = range.startContainer;
+    let end = range.endContainer;
+    let commonAncestor = range.commonAncestorContainer;
+    let nodes = [];
+    let node;
+
+    // walk parent nodes from start to common ancestor
+    for (node = start.parentNode; node; node = node.parentNode)
+    {
+        nodes.push(node);
+        if (node == commonAncestor)
+            break;
+    }
+    nodes.reverse();
+
+    // walk children and siblings from start until end is found
+    for (node = start; node; node = getNextNode(node))
+    {
+        nodes.push(node);
+        if (node == end)
+            break;
+    }
+
+    return nodes;
+}

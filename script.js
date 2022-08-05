@@ -25,7 +25,7 @@ const randomString = (len = 10) => {
 const saveFont = () => {
     chrome.storage.sync.get(['fontForInspection'], function (result) {
         selectedFont = result.fontForInspection;
-        const { fontFamily, fontSize, fontWeight, color } = selectedFont;
+        const { fontFamily, fontSize, fontWeight, color, font } = selectedFont;
 
         const fontName = document.querySelector('#font-name-txt').value
         if (!fontName) {
@@ -38,6 +38,7 @@ const saveFont = () => {
             fontFamily,
             fontWeight,
             fontSize,
+            font,
             color
         }
 
@@ -54,10 +55,10 @@ const saveFont = () => {
             chrome.storage.sync.set({
                 savedFonts
             }, () => {
-                setTimeout(()=>{
+                setTimeout(() => {
                     removeAllSavedFontsFromDOM()
-                    setTimeout(injectSavedFonts,0)
-                },0)
+                    setTimeout(injectSavedFonts, 0)
+                }, 0)
             })
         })
     });
@@ -101,7 +102,6 @@ function injectSavedFont(fontData, fontId) {
     const savedFontDiv = document.createElement('div')
 
     savedFontDiv.addEventListener('click', () => {
-        console.log('clicked')
         savedFontDiv.querySelector('.properties').classList.toggle('hidden')
     })
 
@@ -166,8 +166,21 @@ function removeAllChildNodes(parent) {
 
 injectSavedFonts()
 
-function selectedTextBtnClicked() {
-    console.log('selected text clicked')
+function selectedTextBtnClicked(event) {
+    const savedFont = event.target.closest('.saved-font');
+    const fontId = savedFont.getAttribute('font-id')
+
+    chrome.storage.sync.get(['savedFonts'], function (result) {
+        let savedFonts = result.savedFonts;
+
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, { type: "change_selected", fontData: savedFonts[fontId] }, function (response) {
+                console.log(response.farewell);
+            });
+        });
+    })
+
+
 }
 
 function allTextBtnClicked() {
@@ -188,10 +201,10 @@ function removeBtnClicked(event) {
         chrome.storage.sync.set({
             savedFonts
         }, () => {
-            setTimeout(()=>{
+            setTimeout(() => {
                 removeAllSavedFontsFromDOM()
-                setTimeout(injectSavedFonts,0)
-            },0)
+                setTimeout(injectSavedFonts, 0)
+            }, 0)
         })
     })
 }
