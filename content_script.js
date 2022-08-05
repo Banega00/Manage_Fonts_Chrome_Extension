@@ -54,32 +54,35 @@ chrome.runtime.onMessage.addListener(
                 const range = selection.getRangeAt(index);
                 const nodesInRange = getNodesInRange(range);
                 for (const element of nodesInRange) {
-                    console.log(element)
-                    if(element.style){
+                    if (element.style) {
                         element.style.font = request.fontData.font
                     }
-                    
+
                 }
             }
 
+        } else if (request.type == 'all_text') {
+            const allElements = document.querySelectorAll('*')
+            for(const element of allElements){
+                if (element.style) {
+                    element.style.font = request.fontData.font
+                }
+            }
         }
     }
 );
 
-function getNextNode(node)
-{
+function getNextNode(node) {
     if (node.firstChild)
         return node.firstChild;
-    while (node)
-    {
+    while (node) {
         if (node.nextSibling)
             return node.nextSibling;
         node = node.parentNode;
     }
 }
 
-function getNodesInRange(range)
-{
+function getNodesInRange(range) {
     let start = range.startContainer;
     let end = range.endContainer;
     let commonAncestor = range.commonAncestorContainer;
@@ -87,8 +90,7 @@ function getNodesInRange(range)
     let node;
 
     // walk parent nodes from start to common ancestor
-    for (node = start.parentNode; node; node = node.parentNode)
-    {
+    for (node = start.parentNode; node; node = node.parentNode) {
         nodes.push(node);
         if (node == commonAncestor)
             break;
@@ -96,8 +98,7 @@ function getNodesInRange(range)
     nodes.reverse();
 
     // walk children and siblings from start until end is found
-    for (node = start; node; node = getNextNode(node))
-    {
+    for (node = start; node; node = getNextNode(node)) {
         nodes.push(node);
         if (node == end)
             break;

@@ -184,7 +184,18 @@ function selectedTextBtnClicked(event) {
 }
 
 function allTextBtnClicked() {
-    console.log('all text clicked')
+    const savedFont = event.target.closest('.saved-font');
+    const fontId = savedFont.getAttribute('font-id')
+
+    chrome.storage.sync.get(['savedFonts'], function (result) {
+        let savedFonts = result.savedFonts;
+
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, { type: "all_text", fontData: savedFonts[fontId] }, function (response) {
+                console.log(response.farewell);
+            });
+        });
+    })
 }
 
 function infoBtnClicked() {
