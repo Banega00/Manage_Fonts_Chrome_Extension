@@ -47,7 +47,6 @@ chrome.runtime.onMessage.addListener(
             "from the extension");
 
         if (request.type == 'change_selected') {
-            console.log(request.fontData)
 
             const selection = window.getSelection();
             for (let index = 0; index < selection.rangeCount; index++) {
@@ -56,6 +55,7 @@ chrome.runtime.onMessage.addListener(
                 for (const element of nodesInRange) {
                     if (element.style) {
                         element.style.font = request.fontData.font
+                        element.style.color = request.fontData.color;
                     }
 
                 }
