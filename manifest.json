@@ -1,5 +1,5 @@
 {
-  "name": "My Test Chrome extension",
+  "name": "Font Manager",
   "version": "0.1.0",
   "description": "My Chrome extension for managing fonts",
   "permissions": [

@@ -4,6 +4,12 @@ body.extension-popup-body {
     width: 400px;
 }
 
+.extension-popup-body header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .extension-popup-body .main-btn {
     background-color: rgb(81, 165, 78);
     padding: 10px;

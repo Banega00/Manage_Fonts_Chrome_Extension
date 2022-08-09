@@ -43,9 +43,6 @@ document.addEventListener("selectionchange", debounce(printSelection, 900))
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        console.log(sender.tab ?
-            "from a content script:" + sender.tab.url :
-            "from the extension");
 
         if (request.type == 'change_selected') {
 
@@ -72,6 +69,13 @@ chrome.runtime.onMessage.addListener(
                     element.style.letterSpacing = request.fontData.letterSpacing;
                 }
             }
+        } else if (request.type='bg_change'){
+            const elements = document.querySelectorAll('body *')
+            elements.forEach(el =>{
+                if(el.style){
+                    el.style.backgroundColor = request.backgroundColor
+                }
+            })
         }
     }
 );

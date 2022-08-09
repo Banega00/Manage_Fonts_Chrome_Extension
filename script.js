@@ -1,6 +1,13 @@
 let selectedFont;
 let mode = 'no-edit' //no-edit, edit
 
+document.querySelector('.extension-popup-body #bg-color-picker').addEventListener('input',(event)=>{
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { type: "bg_change", backgroundColor: event.target.value }, function (response) {
+        });
+    });
+})
+
 const rgbToHex = (rgbString)=>{
     //rgbString is rgb(10,20,30) for example
     let numbers = rgbString.split('(')[1].split(')')[0].split(',')
@@ -235,7 +242,6 @@ function allTextBtnClicked() {
 
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             chrome.tabs.sendMessage(tabs[0].id, { type: "all_text", fontData: savedFonts[fontId] }, function (response) {
-                console.log(response.farewell);
             });
         });
     })
