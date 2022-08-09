@@ -17,6 +17,7 @@ const printSelection = event => {
             fontFamily: styles.fontFamily,
             fontWeight: styles.fontWeight,
             fontSize: styles.fontSize,
+            letterSpacing: styles.letterSpacing,
             color: styles.color
         }
     })
@@ -56,6 +57,7 @@ chrome.runtime.onMessage.addListener(
                     if (element.style) {
                         element.style.font = request.fontData.font
                         element.style.color = request.fontData.color;
+                        element.style.letterSpacing = request.fontData.letterSpacing;
                     }
 
                 }
@@ -63,9 +65,11 @@ chrome.runtime.onMessage.addListener(
 
         } else if (request.type == 'all_text') {
             const allElements = document.querySelectorAll('*')
-            for(const element of allElements){
+            for (const element of allElements) {
                 if (element.style) {
                     element.style.font = request.fontData.font
+                    element.style.color = request.fontData.color;
+                    element.style.letterSpacing = request.fontData.letterSpacing;
                 }
             }
         }

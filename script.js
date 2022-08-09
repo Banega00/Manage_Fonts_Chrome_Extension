@@ -13,7 +13,7 @@ const editSvg = '<svg fill="#ffffff" style="margin-left:5px" xmlns="http://www.w
 const inspectFont = () => {
     chrome.storage.sync.get(['fontForInspection'], function (result) {
         selectedFont = result.fontForInspection;
-        const { fontFamily, fontSize, fontWeight, color } = selectedFont;
+        const { fontFamily, fontSize, fontWeight, color, letterSpacing } = selectedFont;
         if (!selectedFont) {
             inspectFontContainer.innerHTML = 'No font selected'
             return;
@@ -26,6 +26,7 @@ const inspectFont = () => {
             <div class="no-edit-div">
                 <div>Font family: <b>${fontFamily}</b>  </div>
                 <div>Font size: <b>${fontSize} </b> </div>
+                <div>Letter spacing: <b>${letterSpacing} </b> </div>
                 <div>Font weight: <b>${fontWeight}</b> </div>
                 <div>Font color: <span class="color-box" style="background-color:${color}">${'&nbsp;'.repeat(10)}</span></div>
             </div>
@@ -33,6 +34,7 @@ const inspectFont = () => {
             <div style="display:none;" class="edit-div">
                 <div>Font family: <input value="${fontFamily}"></div>
                 <div>Font size: <input type="number" min=1 value="${fontSize.slice(0, -2)}"> </div>
+                <div>Letter spacing <input type="number" min=1 value="${letterSpacing.slice(0, -2)}"> </div>
                 <div>Font weight:<input type="number" step=100 min=100 value="${fontWeight}"> </div>
                 <div>Font color:<input type="color" value="${rgbToHex(color)}"></div>
             </div>
