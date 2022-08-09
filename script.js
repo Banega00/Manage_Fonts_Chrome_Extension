@@ -31,19 +31,19 @@ const inspectFont = () => {
             `
         <div class="font-inspect-container">
             <div class="no-edit-div">
-                <div>Font family: <b>${fontFamily}</b>  </div>
-                <div>Font size: <b>${fontSize} </b> </div>
-                <div>Letter spacing: <b>${letterSpacing} </b> </div>
-                <div>Font weight: <b>${fontWeight}</b> </div>
-                <div>Font color: <span class="color-box" style="background-color:${color}">${'&nbsp;'.repeat(10)}</span></div>
+                <div class="div-font-family">Font family: <b>${fontFamily}</b>  </div>
+                <div class="div-font-size">Font size: <b>${fontSize} </b> </div>
+                <div class="div-letter-spacing">Letter spacing: <b>${letterSpacing} </b> </div>
+                <div class="div-font-weight">Font weight: <b>${fontWeight}</b> </div>
+                <div class="div-font-color">Font color: <span class="color-box" style="background-color:${color}">${'&nbsp;'.repeat(10)}</span></div>
             </div>
 
             <div style="display:none;" class="edit-div">
-                <div>Font family: <input value="${fontFamily}"></div>
-                <div>Font size: <input type="number" min=1 value="${fontSize.slice(0, -2)}"> </div>
-                <div>Letter spacing <input type="number" min=1 value="${letterSpacing.slice(0, -2)}"> </div>
-                <div>Font weight:<input type="number" step=100 min=100 value="${fontWeight}"> </div>
-                <div>Font color:<input type="color" value="${rgbToHex(color)}"></div>
+                <div class="input-font-family">Font family: <input value="${fontFamily}"></div>
+                <div class="input-font-size">Font size: <input type="number" min=1 value="${fontSize.slice(0, -2)}"> </div>
+                <div class="input-letter-spacing">Letter spacing <input type="number" min=1 value="${letterSpacing.slice(0, -2)}"> </div>
+                <div class="input-font-weight">Font weight:<input type="number" step=100 min=100 value="${fontWeight}"> </div>
+                <div class="input-font-color">Font color:<input type="color" value="${rgbToHex(color)}"></div>
             </div>
 
             <div class='edit-btn'>Edit ${editSvg} </div>
@@ -63,6 +63,66 @@ const inspectFont = () => {
                     document.querySelector('.no-edit-div').style.display='block'
                     document.querySelector('.edit-div').style.display='none'
                 }
+            })
+
+            document.querySelector('.font-inspect-container .input-font-family').addEventListener('input',(event)=>{
+                const newFontFamily = event.target.value;
+                document.querySelector('.font-inspect-container .div-font-family b').innerText = newFontFamily;
+                chrome.storage.sync.get(['fontForInspection'], function (result) {
+                    selectedFont = result.fontForInspection;
+
+                    chrome.storage.sync.set({
+                        fontForInspection: {...selectedFont, fontFamily: newFontFamily}
+                    })
+                })
+            })
+
+            document.querySelector('.font-inspect-container .input-font-size').addEventListener('input',(event)=>{
+                const newFontSize = event.target.value;
+                document.querySelector('.font-inspect-container .div-font-size b').innerText = newFontSize;
+                chrome.storage.sync.get(['fontForInspection'], function (result) {
+                    selectedFont = result.fontForInspection;
+
+                    chrome.storage.sync.set({
+                        fontForInspection: {...selectedFont, fontSize: newFontSize}
+                    })
+                })
+            })
+
+            document.querySelector('.font-inspect-container .input-letter-spacing').addEventListener('input',(event)=>{
+                const newLetterSpacing = event.target.value;
+                document.querySelector('.font-inspect-container .div-letter-spacing b').innerText = newLetterSpacing;
+                chrome.storage.sync.get(['fontForInspection'], function (result) {
+                    selectedFont = result.fontForInspection;
+
+                    chrome.storage.sync.set({
+                        fontForInspection: {...selectedFont, letterSpacing: newLetterSpacing}
+                    })
+                })
+            })
+
+            document.querySelector('.font-inspect-container .input-font-weight').addEventListener('input',(event)=>{
+                const newFontWeight = event.target.value;
+                document.querySelector('.font-inspect-container .div-font-weight b').innerText = newFontWeight;
+                chrome.storage.sync.get(['fontForInspection'], function (result) {
+                    selectedFont = result.fontForInspection;
+                    
+                    chrome.storage.sync.set({
+                        fontForInspection: {...selectedFont, fontWeight: newFontWeight}
+                    })
+                })
+            })
+
+            document.querySelector('.font-inspect-container .input-font-color').addEventListener('input',(event)=>{
+                const newFontColor = event.target.value;
+                document.querySelector('.font-inspect-container .div-font-color span').style.backgroundColor = newFontColor;
+                chrome.storage.sync.get(['fontForInspection'], function (result) {
+                    selectedFont = result.fontForInspection;
+
+                    chrome.storage.sync.set({
+                        fontForInspection: {...selectedFont, color: newFontColor}
+                    })
+                })
             })
         }, 0)
     });
@@ -196,9 +256,11 @@ function injectSavedFont(fontData, fontId) {
     propertiesDiv.classList.add('properties')
     propertiesDiv.classList.add('hidden')
     propertiesDiv.innerHTML = `
+            <div>Font family: ${fontData.fontFamily}</div>
             <div>Font size: ${fontData.fontSize}</div>
+            <div>Letter spacing: ${fontData.letterSpacing}</div>
             <div>Font weight: ${fontData.fontWeight}</div>
-            <div>Font family: ${fontData.fontFamily}</div>`
+            <div>Font color: ${fontData.color}</div>`
 
     savedFontDiv.appendChild(propertiesDiv)
 
