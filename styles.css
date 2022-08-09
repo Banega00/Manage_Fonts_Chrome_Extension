@@ -77,3 +77,8 @@ body.extension-popup-body {
     width: 10em;
     height: 1em;
 }
+
+.extension-popup-body .font-inspect-container .no-edit-div > *, .extension-popup-body .font-inspect-container .edit-div > *{
+    margin-bottom: 3px;
+
+}
