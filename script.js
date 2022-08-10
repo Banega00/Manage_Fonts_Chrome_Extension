@@ -79,12 +79,12 @@ const inspectFont = () => {
 
             document.querySelector('.font-inspect-container .input-font-size').addEventListener('input',(event)=>{
                 const newFontSize = event.target.value;
-                document.querySelector('.font-inspect-container .div-font-size b').innerText = newFontSize;
+                document.querySelector('.font-inspect-container .div-font-size b').innerText = newFontSize + 'px';
                 chrome.storage.sync.get(['fontForInspection'], function (result) {
                     selectedFont = result.fontForInspection;
 
                     chrome.storage.sync.set({
-                        fontForInspection: {...selectedFont, fontSize: newFontSize}
+                        fontForInspection: {...selectedFont, fontSize: newFontSize + 'px'}
                     })
                 })
             })
@@ -260,7 +260,7 @@ function injectSavedFont(fontData, fontId) {
             <div>Font size: ${fontData.fontSize}</div>
             <div>Letter spacing: ${fontData.letterSpacing}</div>
             <div>Font weight: ${fontData.fontWeight}</div>
-            <div>Font color: ${fontData.color}</div>`
+            <div>Font color:<span class="color-box" style="background-color:${fontData.color}">${'&nbsp;'.repeat(10)}</span></div>`
 
     savedFontDiv.appendChild(propertiesDiv)
 
