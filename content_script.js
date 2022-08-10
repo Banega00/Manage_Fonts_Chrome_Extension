@@ -1,5 +1,6 @@
 
 function firstParent(node) {
+    if(!node)return;
     while (!node.parentElement) node = node.parentNode
     return node.parentElement
 }

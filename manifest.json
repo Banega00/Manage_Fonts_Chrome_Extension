@@ -19,11 +19,18 @@
       ]
     }
   ],
+  "icons": {
+    "16": "/assets/icons/extension-icons/icon16.png",
+    "32": "/assets/icons/extension-icons/icon32.png",
+    "64": "/assets/icons/extension-icons/icon64.png",
+    "128": "/assets/icons/extension-icons/icon128.png"
+  },
   "action": {
     "default_icon": {
-      "16": "assets/ext-icon.png",
-      "24": "assets/ext-icon.png",
-      "32": "assets/ext-icon.png"
+      "16": "/assets/icons/extension-icons/icon16.png",
+      "32": "/assets/icons/extension-icons/icon32.png",
+      "64": "/assets/icons/extension-icons/icon64.png",
+      "128": "/assets/icons/extension-icons/icon128.png"
     },
     "default_title": "My Fonts",
     "default_popup": "popup.html"
