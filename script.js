@@ -41,7 +41,7 @@ const inspectFont = () => {
             <div style="display:none;" class="edit-div">
                 <div class="input-font-family">Font family: <input value="${fontFamily}"></div>
                 <div class="input-font-size">Font size: <input type="number" min=1 value="${fontSize.slice(0, -2)}"> </div>
-                <div class="input-letter-spacing">Letter spacing <input type="number" min=1 value="${letterSpacing.slice(0, -2)}"> </div>
+                <div class="input-letter-spacing">Letter spacing <input type="number" value="${letterSpacing.slice(0, -2)}"> </div>
                 <div class="input-font-weight">Font weight:<input type="number" step=100 min=100 value="${fontWeight}"> </div>
                 <div class="input-font-color">Font color:<input type="color" value="${rgbToHex(color)}"></div>
             </div>
@@ -135,7 +135,7 @@ const randomString = (len = 10) => {
 const saveFont = () => {
     chrome.storage.sync.get(['fontForInspection'], function (result) {
         selectedFont = result.fontForInspection;
-        const { fontFamily, fontSize, fontWeight, color, font } = selectedFont;
+        const { fontFamily, fontSize, fontWeight, color, font, letterSpacing } = selectedFont;
 
         const fontName = document.querySelector('#font-name-txt').value
         if (!fontName) {
@@ -148,6 +148,7 @@ const saveFont = () => {
             fontFamily,
             fontWeight,
             fontSize,
+            letterSpacing,
             font,
             color
         }
@@ -235,10 +236,10 @@ function injectSavedFont(fontData, fontId) {
     allTextBtn.addEventListener('click', allTextBtnClicked)
     allTextBtn.innerHTML = '<img src="assets/icons/all-text.png" alt="">'
 
-    const infoBtn = document.createElement('div')
-    infoBtn.classList.add('command')
-    infoBtn.addEventListener('click', infoBtnClicked)
-    infoBtn.innerHTML = '<img src="assets/icons/info.png" alt="">'
+    const editBtn = document.createElement('div')
+    editBtn.classList.add('command')
+    editBtn.addEventListener('click', editBtnClicked)
+    editBtn.innerHTML = '<img src="assets/icons/edit.png" alt="">'
 
     const removeBtn = document.createElement('div')
     removeBtn.classList.add('command')
@@ -247,7 +248,7 @@ function injectSavedFont(fontData, fontId) {
 
     titleBarDiv.appendChild(selectedTextBtn)
     titleBarDiv.appendChild(allTextBtn)
-    titleBarDiv.appendChild(infoBtn)
+    titleBarDiv.appendChild(editBtn)
     titleBarDiv.appendChild(removeBtn)
 
     savedFontDiv.appendChild(titleBarDiv)
@@ -309,7 +310,7 @@ function allTextBtnClicked() {
     })
 }
 
-function infoBtnClicked() {
+function editBtnClicked() {
     console.log('info clicked')
 }
 
