@@ -88,3 +88,7 @@ body.extension-popup-body {
     margin-bottom: 3px;
 
 }
+
+.saved-font .hidden{
+    display: none;
+}

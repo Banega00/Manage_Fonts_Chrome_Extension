@@ -1,18 +1,19 @@
 let selectedFont;
 let mode = 'no-edit' //no-edit, edit
 
-document.querySelector('.extension-popup-body #bg-color-picker').addEventListener('input',(event)=>{
+document.querySelector('.extension-popup-body #bg-color-picker').addEventListener('input', (event) => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, { type: "bg_change", backgroundColor: event.target.value }, function (response) {
         });
     });
 })
 
-const rgbToHex = (rgbString)=>{
+const rgbToHex = (rgbString) => {
+    if (!rgbString.startsWith('rgb')) return;
     //rgbString is rgb(10,20,30) for example
     let numbers = rgbString.split('(')[1].split(')')[0].split(',')
     numbers = numbers.map(n => +n)
-    const [r,g,b] = numbers;
+    const [r, g, b] = numbers;
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
@@ -52,75 +53,78 @@ const inspectFont = () => {
         setTimeout(() => {
             const editBtn = document.querySelector('.font-inspect-container .edit-btn')
             editBtn.addEventListener('click', (event) => {
-                if(mode == 'no-edit') mode = 'edit'
-                else if(mode == 'edit') mode = 'no-edit'
+                if (mode == 'no-edit') mode = 'edit'
+                else if (mode == 'edit') mode = 'no-edit'
 
                 console.log(mode)
-                if(mode == 'edit'){
-                    document.querySelector('.no-edit-div').style.display='none'
-                    document.querySelector('.edit-div').style.display='block'
-                }else if(mode == 'no-edit'){
-                    document.querySelector('.no-edit-div').style.display='block'
-                    document.querySelector('.edit-div').style.display='none'
+                if (mode == 'edit') {
+                    document.querySelector('.no-edit-div').style.display = 'none'
+                    document.querySelector('.edit-div').style.display = 'block'
+                } else if (mode == 'no-edit') {
+                    document.querySelector('.no-edit-div').style.display = 'block'
+                    document.querySelector('.edit-div').style.display = 'none'
                 }
             })
 
-            document.querySelector('.font-inspect-container .input-font-family').addEventListener('input',(event)=>{
+            document.querySelector('.font-inspect-container .input-font-family').addEventListener('input', (event) => {
                 const newFontFamily = event.target.value;
                 document.querySelector('.font-inspect-container .div-font-family b').innerText = newFontFamily;
                 chrome.storage.sync.get(['fontForInspection'], function (result) {
                     selectedFont = result.fontForInspection;
 
                     chrome.storage.sync.set({
-                        fontForInspection: {...selectedFont, fontFamily: newFontFamily}
+                        fontForInspection: { ...selectedFont, fontFamily: newFontFamily }
                     })
                 })
             })
 
-            document.querySelector('.font-inspect-container .input-font-size').addEventListener('input',(event)=>{
+            document.querySelector('.font-inspect-container .input-font-size').addEventListener('input', (event) => {
                 const newFontSize = event.target.value;
                 document.querySelector('.font-inspect-container .div-font-size b').innerText = newFontSize + 'px';
                 chrome.storage.sync.get(['fontForInspection'], function (result) {
                     selectedFont = result.fontForInspection;
 
                     chrome.storage.sync.set({
-                        fontForInspection: {...selectedFont, fontSize: newFontSize + 'px'}
+                        fontForInspection: { ...selectedFont, fontSize: newFontSize + 'px' }
                     })
                 })
             })
 
-            document.querySelector('.font-inspect-container .input-letter-spacing').addEventListener('input',(event)=>{
-                const newLetterSpacing = event.target.value;
+            document.querySelector('.font-inspect-container .input-letter-spacing').addEventListener('input', (event) => {
+                let newLetterSpacing = event.target.value;
+                if(!isNaN(+newLetterSpacing)){
+                    newLetterSpacing+='px'
+                }
                 document.querySelector('.font-inspect-container .div-letter-spacing b').innerText = newLetterSpacing;
                 chrome.storage.sync.get(['fontForInspection'], function (result) {
                     selectedFont = result.fontForInspection;
 
                     chrome.storage.sync.set({
-                        fontForInspection: {...selectedFont, letterSpacing: newLetterSpacing}
+                        fontForInspection: { ...selectedFont, letterSpacing: newLetterSpacing }
                     })
                 })
             })
 
-            document.querySelector('.font-inspect-container .input-font-weight').addEventListener('input',(event)=>{
+            document.querySelector('.font-inspect-container .input-font-weight').addEventListener('input', (event) => {
                 const newFontWeight = event.target.value;
                 document.querySelector('.font-inspect-container .div-font-weight b').innerText = newFontWeight;
                 chrome.storage.sync.get(['fontForInspection'], function (result) {
                     selectedFont = result.fontForInspection;
-                    
+
                     chrome.storage.sync.set({
-                        fontForInspection: {...selectedFont, fontWeight: newFontWeight}
+                        fontForInspection: { ...selectedFont, fontWeight: newFontWeight }
                     })
                 })
             })
 
-            document.querySelector('.font-inspect-container .input-font-color').addEventListener('input',(event)=>{
+            document.querySelector('.font-inspect-container .input-font-color').addEventListener('input', (event) => {
                 const newFontColor = event.target.value;
                 document.querySelector('.font-inspect-container .div-font-color span').style.backgroundColor = newFontColor;
                 chrome.storage.sync.get(['fontForInspection'], function (result) {
                     selectedFont = result.fontForInspection;
 
                     chrome.storage.sync.set({
-                        fontForInspection: {...selectedFont, color: newFontColor}
+                        fontForInspection: { ...selectedFont, color: newFontColor }
                     })
                 })
             })
@@ -211,15 +215,17 @@ function removeAllSavedFontsFromDOM() {
 }
 function injectSavedFont(fontData, fontId) {
     const savedFontDiv = document.createElement('div')
-
-    savedFontDiv.addEventListener('click', () => {
-        savedFontDiv.querySelector('.properties').classList.toggle('hidden')
-    })
+    savedFontDiv.classList.add('saved-font')
 
     savedFontDiv.setAttribute('font-id', fontId)
 
     const titleBarDiv = document.createElement('div')
     titleBarDiv.classList.add('title-bar')
+
+
+    titleBarDiv.addEventListener('click', () => {
+        savedFontDiv.querySelector('.properties').classList.toggle('hidden')
+    })
 
     const fontNameHeader = document.createElement('h3')
     fontNameHeader.innerText = fontData.fontName
@@ -257,17 +263,94 @@ function injectSavedFont(fontData, fontId) {
     propertiesDiv.classList.add('properties')
     propertiesDiv.classList.add('hidden')
     propertiesDiv.innerHTML = `
-            <div>Font family: ${fontData.fontFamily}</div>
-            <div>Font size: ${fontData.fontSize}</div>
-            <div>Letter spacing: ${fontData.letterSpacing}</div>
-            <div>Font weight: ${fontData.fontWeight}</div>
-            <div>Font color:<span class="color-box" style="background-color:${fontData.color}">${'&nbsp;'.repeat(10)}</span></div>`
+    <div class="no-edit-div">
+        <div class="div-font-family">Font family: <b>${fontData.fontFamily}</b>  </div>
+        <div class="div-font-size">Font size: <b>${fontData.fontSize} </b> </div>
+        <div class="div-letter-spacing">Letter spacing: <b>${fontData.letterSpacing} </b> </div>
+        <div class="div-font-weight">Font weight: <b>${fontData.fontWeight}</b> </div>
+        <div class="div-font-color">Font color: <span class="color-box" style="background-color:${fontData.color}">${'&nbsp;'.repeat(10)}</span></div>
+    </div>
+
+    <div class="edit-div hidden">
+        <div class="input-font-family">Font family: <input value="${fontData.fontFamily}"></div>
+        <div class="input-font-size">Font size: <input type="number" min=1 value="${fontData.fontSize.slice(0, -2)}"> </div>
+        <div class="input-letter-spacing">Letter spacing <input type="number" value="${fontData.letterSpacing?.slice(0, -2)}"> </div>
+        <div class="input-font-weight">Font weight:<input type="number" step=100 min=100 value="${fontData.fontWeight}"> </div>
+        <div class="input-font-color">Font color:<input type="color" value="${rgbToHex(fontData.color)}"></div>
+    </div>
+    `
 
     savedFontDiv.appendChild(propertiesDiv)
 
     savedFontDiv.classList.add('saved-font')
     const savedFontsContainer = document.querySelector('.saved-fonts-container')
     savedFontsContainer.appendChild(savedFontDiv)
+
+    setTimeout(() => {
+        savedFontDiv.querySelector('.input-font-family').addEventListener('input', (event) => {
+            const newFontFamily = event.target.value;
+            savedFontDiv.querySelector('.div-font-family b').innerText = newFontFamily;
+            chrome.storage.sync.get(['fontForInspection'], function (result) {
+                selectedFont = result.fontForInspection;
+
+                chrome.storage.sync.set({
+                    fontForInspection: { ...selectedFont, fontFamily: newFontFamily }
+                })
+            })
+        })
+
+        savedFontDiv.querySelector('.input-font-size').addEventListener('input', (event) => {
+            const newFontSize = event.target.value;
+            savedFontDiv.querySelector('.div-font-size b').innerText = newFontSize + 'px';
+            chrome.storage.sync.get(['savedFonts'], function (result) {
+                let savedFonts = result.savedFonts;
+                savedFonts[fontId] = { ...savedFonts[fontId], fontSize: newFontSize + 'px'};
+                chrome.storage.sync.set({
+                    savedFonts
+                })
+            })
+        })
+
+        savedFontDiv.querySelector('.input-letter-spacing').addEventListener('input', (event) => {
+            let newLetterSpacing = event.target.value;
+            if(!isNaN(+newLetterSpacing)){
+                newLetterSpacing+='px'
+            }
+            savedFontDiv.querySelector('.div-letter-spacing b').innerText = newLetterSpacing;
+            
+            chrome.storage.sync.get(['savedFonts'], function (result) {
+                let savedFonts = result.savedFonts;
+                savedFonts[fontId] = { ...savedFonts[fontId], letterSpacing: newLetterSpacing };
+                chrome.storage.sync.set({
+                    savedFonts
+                })
+            })
+        })
+
+        savedFontDiv.querySelector('.input-font-weight').addEventListener('input', (event) => {
+            const newFontWeight = event.target.value;
+            savedFontDiv.querySelector('.div-font-weight b').innerText = newFontWeight;
+            chrome.storage.sync.get(['savedFonts'], function (result) {
+                let savedFonts = result.savedFonts;
+                savedFonts[fontId] = { ...savedFonts[fontId], fontWeight: newFontWeight};
+                chrome.storage.sync.set({
+                    savedFonts
+                })
+            })
+        })
+
+        savedFontDiv.querySelector('.input-font-color').addEventListener('input', (event) => {
+            const newFontColor = event.target.value;
+            savedFontDiv.querySelector('.div-font-color span').style.backgroundColor = newFontColor;
+            chrome.storage.sync.get(['savedFonts'], function (result) {
+                let savedFonts = result.savedFonts;
+                savedFonts[fontId] = { ...savedFonts[fontId], color: newFontColor};
+                chrome.storage.sync.set({
+                    savedFonts
+                })
+            })
+        })
+    }, 0)
 }
 
 function removeAllChildNodes(parent) {
@@ -280,7 +363,9 @@ function removeAllChildNodes(parent) {
 injectSavedFonts()
 
 function selectedTextBtnClicked(event) {
+    event.stopPropagation()
     const savedFont = event.target.closest('.saved-font');
+    savedFont.querySelector('.properties').classList.remove('hidden')
     const fontId = savedFont.getAttribute('font-id')
 
     chrome.storage.sync.get(['savedFonts'], function (result) {
@@ -296,8 +381,10 @@ function selectedTextBtnClicked(event) {
 
 }
 
-function allTextBtnClicked() {
+function allTextBtnClicked(event) {
+    event.stopPropagation()
     const savedFont = event.target.closest('.saved-font');
+    savedFont.querySelector('.properties').classList.remove('hidden')
     const fontId = savedFont.getAttribute('font-id')
 
     chrome.storage.sync.get(['savedFonts'], function (result) {
@@ -310,12 +397,21 @@ function allTextBtnClicked() {
     })
 }
 
-function editBtnClicked() {
-    console.log('info clicked')
+function editBtnClicked(event) {
+    event.stopPropagation()
+    const savedFontDiv = event.target.closest('.saved-font');
+    savedFontDiv.querySelector('.properties').classList.remove('hidden')
+    const noEditDiv = savedFontDiv.querySelector('.no-edit-div')
+    noEditDiv.classList.toggle('hidden')
+
+    const EditDiv = savedFontDiv.querySelector('.edit-div')
+    EditDiv.classList.toggle('hidden')
 }
 
 function removeBtnClicked(event) {
+    event.stopPropagation()
     const savedFont = event.target.closest('.saved-font');
+    savedFont.querySelector('.properties').classList.remove('hidden')
     const fontId = savedFont.getAttribute('font-id')
 
     chrome.storage.sync.get(['savedFonts'], function (result) {
