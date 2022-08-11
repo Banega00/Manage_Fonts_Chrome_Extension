@@ -21,7 +21,7 @@ const editSvg = '<svg fill="#ffffff" style="margin-left:5px" xmlns="http://www.w
 const inspectFont = () => {
     chrome.storage.sync.get(['fontForInspection'], function (result) {
         selectedFont = result.fontForInspection;
-        const { fontFamily, fontSize, fontWeight, color, letterSpacing } = selectedFont;
+        const { fontFamily, fontSize, fontWeight, color, letterSpacing, lineHeight } = selectedFont;
         if (!selectedFont) {
             inspectFontContainer.innerHTML = 'No font selected'
             return;
@@ -35,14 +35,16 @@ const inspectFont = () => {
                 <div class="div-font-family">Font family: <b>${fontFamily}</b>  </div>
                 <div class="div-font-size">Font size: <b>${fontSize} </b> </div>
                 <div class="div-letter-spacing">Letter spacing: <b>${letterSpacing} </b> </div>
+                <div class="div-line-height">Line height: <b>${lineHeight} </b> </div>
                 <div class="div-font-weight">Font weight: <b>${fontWeight}</b> </div>
                 <div class="div-font-color">Font color: <span class="color-box" style="background-color:${color}">${'&nbsp;'.repeat(10)}</span></div>
             </div>
 
             <div style="display:none;" class="edit-div">
                 <div class="input-font-family">Font family: <input value="${fontFamily}"></div>
-                <div class="input-font-size">Font size: <input type="number" min=1 value="${fontSize.slice(0, -2)}"> </div>
-                <div class="input-letter-spacing">Letter spacing <input type="number" value="${letterSpacing.slice(0, -2)}"> </div>
+                <div class="input-font-size">Font size: <input type="number"  step=0.1 min=1 value="${fontSize.slice(0, -2)}"> </div>
+                <div class="input-letter-spacing">Letter spacing <input type="number" step=0.1  value="${letterSpacing.slice(0, -2)}"> </div>
+                <div class="input-line-height">Line height <input type="number" step=0.1  value="${lineHeight.slice(0, -2)}"> </div>
                 <div class="input-font-weight">Font weight:<input type="number" step=100 min=100 value="${fontWeight}"> </div>
                 <div class="input-font-color">Font color:<input type="color" value="${rgbToHex(color)}"></div>
             </div>
@@ -86,6 +88,21 @@ const inspectFont = () => {
 
                     chrome.storage.sync.set({
                         fontForInspection: { ...selectedFont, fontSize: newFontSize + 'px' }
+                    })
+                })
+            })
+
+            document.querySelector('.font-inspect-container .input-line-height').addEventListener('input', (event) => {
+                let newLineHeight = event.target.value;
+                if(!isNaN(+newLineHeight)){
+                    newLineHeight+='px'
+                }
+                document.querySelector('.font-inspect-container .div-line-height b').innerText = newLineHeight;
+                chrome.storage.sync.get(['fontForInspection'], function (result) {
+                    selectedFont = result.fontForInspection;
+
+                    chrome.storage.sync.set({
+                        fontForInspection: { ...selectedFont, lineHeight: newLineHeight }
                     })
                 })
             })
@@ -139,7 +156,7 @@ const randomString = (len = 10) => {
 const saveFont = () => {
     chrome.storage.sync.get(['fontForInspection'], function (result) {
         selectedFont = result.fontForInspection;
-        const { fontFamily, fontSize, fontWeight, color, font, letterSpacing } = selectedFont;
+        const { fontFamily, fontSize, fontWeight, color, font, letterSpacing, lineHeight } = selectedFont;
 
         const fontName = document.querySelector('#font-name-txt').value
         if (!fontName) {
@@ -152,7 +169,8 @@ const saveFont = () => {
             fontFamily,
             fontWeight,
             fontSize,
-            letterSpacing,
+            letterSpacing, 
+            lineHeight,
             font,
             color
         }
@@ -267,14 +285,16 @@ function injectSavedFont(fontData, fontId) {
         <div class="div-font-family">Font family: <b>${fontData.fontFamily}</b>  </div>
         <div class="div-font-size">Font size: <b>${fontData.fontSize} </b> </div>
         <div class="div-letter-spacing">Letter spacing: <b>${fontData.letterSpacing} </b> </div>
+        <div class="div-line-height">Line height: <b>${fontData.lineHeight} </b> </div>
         <div class="div-font-weight">Font weight: <b>${fontData.fontWeight}</b> </div>
         <div class="div-font-color">Font color: <span class="color-box" style="background-color:${fontData.color}">${'&nbsp;'.repeat(10)}</span></div>
     </div>
 
     <div class="edit-div hidden">
         <div class="input-font-family">Font family: <input value="${fontData.fontFamily}"></div>
-        <div class="input-font-size">Font size: <input type="number" min=1 value="${fontData.fontSize.slice(0, -2)}"> </div>
-        <div class="input-letter-spacing">Letter spacing <input type="number" value="${fontData.letterSpacing?.slice(0, -2)}"> </div>
+        <div class="input-font-size">Font size: <input type="number" step=0.1 min=1 value="${fontData.fontSize.slice(0, -2)}"> </div>
+        <div class="input-letter-spacing">Letter spacing <input type="number" step=0.1 value="${fontData.letterSpacing?.slice(0, -2)}"> </div>
+        <div class="input-line-height">Line height <input type="number" step=0.1 value="${fontData.lineHeight?.slice(0, -2)}"> </div>
         <div class="input-font-weight">Font weight:<input type="number" step=100 min=100 value="${fontData.fontWeight}"> </div>
         <div class="input-font-color">Font color:<input type="color" value="${rgbToHex(fontData.color)}"></div>
     </div>
@@ -305,6 +325,22 @@ function injectSavedFont(fontData, fontId) {
             chrome.storage.sync.get(['savedFonts'], function (result) {
                 let savedFonts = result.savedFonts;
                 savedFonts[fontId] = { ...savedFonts[fontId], fontSize: newFontSize + 'px'};
+                chrome.storage.sync.set({
+                    savedFonts
+                })
+            })
+        })
+
+        savedFontDiv.querySelector('.input-line-height').addEventListener('input', (event) => {
+            let newLineHeight = event.target.value;
+            if(!isNaN(+newLineHeight)){
+                newLineHeight+='px'
+            }
+            savedFontDiv.querySelector('.div-line-height b').innerText = newLineHeight;
+            
+            chrome.storage.sync.get(['savedFonts'], function (result) {
+                let savedFonts = result.savedFonts;
+                savedFonts[fontId] = { ...savedFonts[fontId], lineHeight: newLineHeight };
                 chrome.storage.sync.set({
                     savedFonts
                 })

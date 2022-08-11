@@ -19,6 +19,8 @@ const printSelection = event => {
             fontWeight: styles.fontWeight,
             fontSize: styles.fontSize,
             letterSpacing: styles.letterSpacing,
+            lineHeight: styles.lineHeight,
+            selectedText: selection.toString(),
             color: styles.color
         }
     })
@@ -57,6 +59,7 @@ chrome.runtime.onMessage.addListener(
                         element.style.fontWeight = request.fontData.fontWeight
                         element.style.fontSize = request.fontData.fontSize
                         element.style.letterSpacing = request.fontData.letterSpacing;
+                        element.style.lineHeight = request.fontData.lineHeight;
                         element.style.color = request.fontData.color;
                     }
 
@@ -71,6 +74,7 @@ chrome.runtime.onMessage.addListener(
                     element.style.fontWeight = request.fontData.fontWeight
                     element.style.fontSize = request.fontData.fontSize
                     element.style.letterSpacing = request.fontData.letterSpacing;
+                    element.style.lineHeight = request.fontData.lineHeight;
                     element.style.color = request.fontData.color;
                 }
             }
